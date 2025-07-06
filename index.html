@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="hu">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>🎮 Gānball Games Platform</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="platform-container">
+      <div class="header">
+        <h1>🎮 Gānball Games</h1>
+        <p>Moduláris Sportjáték Platform</p>
+
+        <div class="mode-toggle">
+          <button class="mode-btn active" data-mode="basic">Alap Mód</button>
+          <button class="mode-btn" data-mode="partner">💎 Partner Mód</button>
+        </div>
+      </div>
+
+      <div class="games-grid" id="games-grid">
+        <!-- Games will be loaded here -->
+      </div>
+
+      <div class="platform-stats">
+        <h3>📊 Platform Statisztikák</h3>
+        <div class="global-stats">
+          <div class="stat-item">
+            <span class="stat-number">4</span>
+            <span class="stat-label">Elérhető Játék</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-number">500K+</span>
+            <span class="stat-label">Összes Kombináció</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-number" id="total-sessions">0</span>
+            <span class="stat-label">Lejátszott Szessziók</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-number" id="current-mode">Alap</span>
+            <span class="stat-label">Aktív Mód</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+      // Platform specific initialization
+      document.addEventListener("DOMContentLoaded", function () {
+        initializePlatform();
+        loadGames();
+        updateStats();
+      });
+    </script>
+  </body>
+</html>

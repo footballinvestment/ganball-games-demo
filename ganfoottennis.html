@@ -1,0 +1,1063 @@
+<!DOCTYPE html>
+<html lang="hu">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>🎾 GānFoottennis</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <div class="mode-toggle">
+          <button class="mode-btn active" data-mode="basic">Alap Mód</button>
+          <button class="mode-btn" data-mode="partner">💎 Partner Mód</button>
+        </div>
+        <h1>🎾 GānFoottennis</h1>
+        <p id="subtitle">Konfiguráció Generátor - Alap Mód</p>
+
+        <div style="margin-top: 20px">
+          <button class="back-btn" onclick="window.location.href='index.html'">
+            ← Vissza a Hubra
+          </button>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="section">
+          <div class="section-title">🎯 Érintések Száma</div>
+          <div class="touch-count-selector">
+            <div class="touch-count-btn" data-count="1">1 Érintés</div>
+            <div class="touch-count-btn active" data-count="2">2 Érintés</div>
+            <div class="touch-count-btn" data-count="3">3 Érintés</div>
+            <div class="touch-count-btn free-mode" data-count="free">
+              <div>🎲 Szabad Választás</div>
+              <div
+                style="font-size: 0.8em; opacity: 0.7"
+                id="free-choice-label"
+              >
+                💎 Partner funkció
+              </div>
+            </div>
+          </div>
+
+          <div class="touch-config" id="touch-config">
+            <div class="touch-item-config">
+              <div class="touch-label">1. Érintés</div>
+              <div class="radio-group">
+                <div
+                  class="radio-btn active"
+                  data-touch="1"
+                  data-mode="generated"
+                >
+                  Generált
+                </div>
+                <div class="radio-btn free" data-touch="1" data-mode="free">
+                  Szabad 💎
+                </div>
+              </div>
+            </div>
+            <div class="touch-item-config" id="touch-2-config">
+              <div class="touch-label">2. Érintés</div>
+              <div class="radio-group">
+                <div
+                  class="radio-btn active"
+                  data-touch="2"
+                  data-mode="generated"
+                >
+                  Generált
+                </div>
+                <div class="radio-btn free" data-touch="2" data-mode="free">
+                  Szabad 💎
+                </div>
+              </div>
+            </div>
+            <div
+              class="touch-item-config"
+              id="touch-3-config"
+              style="display: none"
+            >
+              <div class="touch-label">3. Érintés</div>
+              <div class="radio-group">
+                <div
+                  class="radio-btn active"
+                  data-touch="3"
+                  data-mode="generated"
+                >
+                  Generált
+                </div>
+                <div class="radio-btn free" data-touch="3" data-mode="free">
+                  Szabad 💎
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="section-title">🌍 Opcionális Kultúrák</div>
+          <div class="cultures-grid">
+            <div class="culture-card active" data-culture="cuju">
+              <div class="checkbox"></div>
+              <div class="culture-title">🏺 CuJu Technikák</div>
+              <div class="culture-desc">4000 éves kínai technikák</div>
+            </div>
+            <div class="culture-card active" data-culture="mezoamerikai">
+              <div class="checkbox"></div>
+              <div class="culture-title">🏛️ Mezoamerikai</div>
+              <div class="culture-desc">Csípő technikák</div>
+            </div>
+            <div class="culture-card" data-culture="dominantFoot">
+              <div class="checkbox"></div>
+              <div class="culture-title">🦶 Domináns Oldal Mód</div>
+              <div class="culture-desc">
+                Jobb/Bal helyett Domináns/Gyengébb oldal
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="generate-section">
+          <button class="generate-btn" onclick="generate()">
+            🎲 Generálás
+          </button>
+        </div>
+
+        <div class="results" id="results">
+          <div class="results-header">
+            <h2>⚡ Generált Konfiguráció</h2>
+          </div>
+          <div class="results-content" id="results-content"></div>
+          <div class="stats-footer" id="stats"></div>
+        </div>
+
+        <!-- GAME RECORDING SECTION -->
+        <div class="game-recording-section" id="game-recording-section">
+          <!-- Match Type Selection -->
+          <div class="game-step active" id="game-step-match-type">
+            <div class="game-step-title">🎯 Match Típus Választása</div>
+            <div class="match-type-selector">
+              <div class="match-type-btn" data-points="3" data-time="60">
+                <div class="match-points">3 PONT</div>
+                <div class="match-time">1 perc</div>
+              </div>
+              <div class="match-type-btn" data-points="11" data-time="180">
+                <div class="match-points">11 PONT</div>
+                <div class="match-time">3 perc</div>
+              </div>
+              <div class="match-type-btn" data-points="21" data-time="300" id="game-match-21">
+                <div class="match-points">21 PONT</div>
+                <div class="match-time">5 perc</div>
+                <div class="partner-only">💎 Partner Mód</div>
+              </div>
+            </div>
+            <div style="text-align: center; margin-top: 20px;">
+              <button class="btn btn-primary" onclick="initializeGameSession()" id="init-game-btn" disabled>
+                🎮 GAME INDÍTÁSA (3 Match sorozat)
+              </button>
+            </div>
+          </div>
+          
+          <!-- Game Ready -->
+          <div class="game-step hidden" id="game-step-ready">
+            <div class="game-step-title">🏁 Match Indítás</div>
+            <div id="game-ready-content">
+              <!-- Dynamic content will be loaded here -->
+            </div>
+          </div>
+          
+          <!-- Game In Progress -->
+          <div class="game-step hidden" id="game-step-progress">
+            <div class="game-step-title">⚡ Játék Folyamatban</div>
+            <div id="game-progress-content">
+              <!-- Dynamic content will be loaded here -->
+            </div>
+          </div>
+          
+          <!-- Game Summary -->
+          <div class="game-step hidden" id="game-step-summary">
+            <div class="game-step-title">🏆 Játék Befejezve</div>
+            <div id="game-summary-content">
+              <!-- Dynamic content will be loaded here -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // === KONFIGURÁCIÓ ===
+      let config = {
+        mode: "basic",
+        touchCount: 2,
+        isFreeCount: false,
+        touches: { 1: "generated", 2: "generated", 3: "generated" },
+        cultures: { cuju: true, mezoamerikai: true, dominantFoot: false },
+      };
+
+      // === GAME STATE MANAGEMENT ===
+      let gameState = {
+        isActive: false,
+        currentConfig: null,
+        generatedResult: null,
+        matchType: null,
+        selectedPoints: 0,
+        selectedTime: 0,
+        currentStep: 'match-type',
+        sessionData: {
+          matches: [],
+          totalMatches: 3,
+          currentMatch: 0,
+          startTime: null,
+          endTime: null
+        }
+      };
+
+      // === GENERATED RESULT STORAGE ===
+      let GENERATED_RESULT = null;
+
+      // === TECHNIKÁK ===
+      const TECHNIQUES = {
+        serve: {
+          modern: [
+            "Jobb + Belső",
+            "Jobb + Rüszt",
+            "Jobb + Külső",
+            "Jobb + Sarok",
+            "Jobb + Térd",
+            "Jobb + Váll",
+            "Bal + Belső",
+            "Bal + Rüszt",
+            "Bal + Külső",
+            "Bal + Sarok",
+            "Bal + Térd",
+            "Bal + Váll",
+          ],
+          cuju: ["Mell (CuJu)", "Hát (CuJu)"],
+          mezoamerikai: ["Jobb + Csípő", "Bal + Csípő"],
+          fejeles: [
+            "Bal kéz feldobás + Fejelés",
+            "Jobb kéz feldobás + Fejelés",
+            "Két kéz feldobás + Fejelés",
+          ],
+        },
+        touch: {
+          modern: [
+            "Jobb + Belső",
+            "Jobb + Rüszt",
+            "Jobb + Külső",
+            "Jobb + Sarok",
+            "Jobb + Térd",
+            "Jobb + Váll",
+            "Bal + Belső",
+            "Bal + Rüszt",
+            "Bal + Külső",
+            "Bal + Sarok",
+            "Bal + Térd",
+            "Bal + Váll",
+          ],
+          cuju: ["Mell (CuJu)", "Hát (CuJu)"],
+          mezoamerikai: ["Jobb + Csípő", "Bal + Csípő"],
+          fejeles: ["Fejelés"],
+        },
+      };
+
+      const CATEGORY_LABELS = {
+        modern: "🦶 Modern Futball",
+        cuju: "🏺 4000 éves CuJu",
+        mezoamerikai: "🏛️ Mezoamerikai",
+        fejeles: "🤕 Fejelési",
+        dominantside: "🦶 Domináns/Gyengébb Oldal",
+      };
+
+      // === INICIALIZÁLÁS ===
+      document.addEventListener("DOMContentLoaded", function () {
+        initEventListeners();
+        updateUIForMode();
+        updateTouchConfig();
+        updateSessionCount();
+      });
+
+      function initEventListeners() {
+        // Mode váltás
+        document.querySelectorAll(".mode-btn").forEach((btn) => {
+          btn.addEventListener("click", function () {
+            document
+              .querySelectorAll(".mode-btn")
+              .forEach((b) => b.classList.remove("active"));
+            this.classList.add("active");
+            config.mode = this.dataset.mode;
+            updateUIForMode();
+          });
+        });
+
+        // Érintések száma
+        document.querySelectorAll(".touch-count-btn").forEach((btn) => {
+          btn.addEventListener("click", function () {
+            if (this.dataset.count === "free" && config.mode === "basic")
+              return;
+
+            document
+              .querySelectorAll(".touch-count-btn")
+              .forEach((b) => b.classList.remove("active"));
+            this.classList.add("active");
+
+            const count = this.dataset.count;
+            config.isFreeCount = count === "free";
+            config.touchCount = config.isFreeCount ? 0 : parseInt(count);
+            updateTouchConfig();
+          });
+        });
+
+        // Érintés módok
+        document.addEventListener("click", function (e) {
+          if (e.target.classList.contains("radio-btn")) {
+            if (e.target.dataset.mode === "free" && config.mode === "basic")
+              return;
+
+            const touch = e.target.dataset.touch;
+            const mode = e.target.dataset.mode;
+
+            document
+              .querySelectorAll(`[data-touch="${touch}"]`)
+              .forEach((btn) => {
+                btn.classList.remove("active");
+              });
+            e.target.classList.add("active");
+            config.touches[touch] = mode;
+          }
+        });
+
+        // Kultúrák
+        document.querySelectorAll(".culture-card").forEach((card) => {
+          card.addEventListener("click", function () {
+            this.classList.toggle("active");
+            const culture = this.dataset.culture;
+            config.cultures[culture] = this.classList.contains("active");
+            console.log(
+              "Kultúra frissítve:",
+              culture,
+              config.cultures[culture]
+            ); // Debug log
+          });
+        });
+      }
+
+      function updateUIForMode() {
+        const isPartner = config.mode === "partner";
+        const freeChoiceBtn = document.querySelector('[data-count="free"]');
+        const freeRadioBtns = document.querySelectorAll(
+          '.radio-btn[data-mode="free"]'
+        );
+        const freeChoiceLabel = document.getElementById("free-choice-label");
+        const subtitle = document.getElementById("subtitle");
+
+        if (isPartner) {
+          if (subtitle)
+            subtitle.textContent =
+              "Teljes Konfiguráció - 💎 Partner Mód (269,002 kombináció)";
+          if (freeChoiceBtn) {
+            freeChoiceBtn.style.opacity = "1";
+            freeChoiceBtn.style.pointerEvents = "auto";
+          }
+          if (freeChoiceLabel) {
+            freeChoiceLabel.textContent = "✅ Elérhető";
+            freeChoiceLabel.style.color = "#28a745";
+          }
+          freeRadioBtns.forEach((btn) => {
+            btn.style.opacity = "1";
+            btn.style.pointerEvents = "auto";
+          });
+        } else {
+          if (subtitle)
+            subtitle.textContent = "Konfiguráció Generátor - Alap Mód";
+          if (freeChoiceBtn) {
+            freeChoiceBtn.style.opacity = "0.5";
+            freeChoiceBtn.style.pointerEvents = "none";
+          }
+          if (freeChoiceLabel) {
+            freeChoiceLabel.textContent = "💎 Partner funkció";
+            freeChoiceLabel.style.color = "#6c757d";
+          }
+          freeRadioBtns.forEach((btn) => {
+            btn.style.opacity = "0.5";
+            btn.style.pointerEvents = "none";
+          });
+
+          if (config.isFreeCount) {
+            config.isFreeCount = false;
+            config.touchCount = 2;
+            document
+              .querySelectorAll(".touch-count-btn")
+              .forEach((b) => b.classList.remove("active"));
+            document.querySelector('[data-count="2"]').classList.add("active");
+          }
+
+          config.touches[1] = "generated";
+          config.touches[2] = "generated";
+          config.touches[3] = "generated";
+
+          document
+            .querySelectorAll('.radio-btn[data-mode="generated"]')
+            .forEach((btn) => {
+              btn.classList.add("active");
+            });
+        }
+        updateTouchConfig();
+      }
+
+      function updateTouchConfig() {
+        const configDiv = document.getElementById("touch-config");
+        const touch2 = document.getElementById("touch-2-config");
+        const touch3 = document.getElementById("touch-3-config");
+
+        if (config.isFreeCount) {
+          configDiv.classList.remove("show");
+        } else {
+          configDiv.classList.add("show");
+          if (touch2)
+            touch2.style.display = config.touchCount >= 2 ? "flex" : "none";
+          if (touch3)
+            touch3.style.display = config.touchCount >= 3 ? "flex" : "none";
+        }
+      }
+
+      function updateSessionCount() {
+        // Update session count for GānFoottennis
+        let sessionCount = parseInt(
+          localStorage.getItem("ganball-total-sessions") || "0"
+        );
+        let gameStats = JSON.parse(
+          localStorage.getItem("ganball-game-stats") || "{}"
+        );
+
+        if (!gameStats["ganfoottennis"]) {
+          gameStats["ganfoottennis"] = { sessions: 0, lastPlayed: null };
+        }
+
+        gameStats["ganfoottennis"].sessions++;
+        gameStats["ganfoottennis"].lastPlayed = new Date().toISOString();
+        sessionCount++;
+
+        localStorage.setItem("ganball-total-sessions", sessionCount.toString());
+        localStorage.setItem("ganball-game-stats", JSON.stringify(gameStats));
+      }
+
+      // === GENERÁLÁS ===
+      function generate() {
+        // Button state management
+        const generateBtn = document.querySelector(".generate-btn");
+        generateBtn.textContent = "🔄 Generálás...";
+        generateBtn.disabled = true;
+        
+        console.log("Generálás indítva, config:", config);
+        const result = {
+          serve: generateServe(),
+          touches: config.isFreeCount ? null : generateTouches(),
+        };
+        
+        // 🔧 JAVÍTÁS: Elmentjük a generált eredményt
+        GENERATED_RESULT = result;
+        console.log("✅ Generált eredmény elmentve:", GENERATED_RESULT);
+        
+        displayResults(result);
+        
+        // Reset button state
+        setTimeout(() => {
+          generateBtn.textContent = "🎲 Generálás";
+          generateBtn.disabled = false;
+        }, 500);
+      }
+
+      function generateServe() {
+        const availableTechniques = getAvailableTechniques("serve");
+        const technique = getRandomTechnique(availableTechniques);
+        return {
+          technique: technique,
+          category: getTechniqueCategory(technique, "serve"),
+        };
+      }
+
+      function generateTouches() {
+        const touches = [];
+        for (let i = 1; i <= config.touchCount; i++) {
+          if (config.touches[i] === "free") {
+            touches.push({
+              number: i,
+              technique: null,
+              category: "free",
+              isFree: true,
+            });
+          } else {
+            const availableTechniques = getAvailableTechniques("touch", i);
+            const technique = getRandomTechnique(availableTechniques);
+            touches.push({
+              number: i,
+              technique: technique,
+              category: getTechniqueCategory(technique, "touch"),
+              isFree: false,
+            });
+          }
+        }
+        return touches;
+      }
+
+      function getAvailableTechniques(type, touchNumber = null) {
+        let techniques = [
+          ...TECHNIQUES[type].modern,
+          ...TECHNIQUES[type].fejeles,
+        ];
+        if (config.cultures.cuju) {
+          techniques = [...techniques, ...TECHNIQUES[type].cuju];
+        }
+        if (config.cultures.mezoamerikai) {
+          if (
+            type === "serve" ||
+            (touchNumber && touchNumber === config.touchCount)
+          ) {
+            techniques = [...techniques, ...TECHNIQUES[type].mezoamerikai];
+          }
+        }
+
+        // ÚJ RÉSZ: Ha domináns oldal mód aktív, cseréld a technikákat
+        if (config.cultures.dominantFoot) {
+          console.log("Domináns mód aktív, technikák adaptálása"); // Debug log
+          techniques = techniques.map((tech) => {
+            return tech
+              .replace(/Jobb \+/g, "Domináns Oldal +")
+              .replace(/Bal \+/g, "Gyengébb Oldal +");
+          });
+        }
+
+        return techniques;
+      }
+
+      function getRandomTechnique(techniques) {
+        return techniques[Math.floor(Math.random() * techniques.length)];
+      }
+
+      function getTechniqueCategory(technique, type) {
+        // 🔧 JAVÍTÁS: Ha domináns mód aktív, alakítsd vissza az eredeti névre a kereséshez
+        let originalTechnique = technique;
+        if (config.cultures.dominantFoot) {
+          originalTechnique = technique
+            .replace(/Domináns Oldal \+/g, "Jobb +")
+            .replace(/Gyengébb Oldal \+/g, "Bal +");
+          console.log("Kategória keresés:", technique, "→", originalTechnique); // Debug log
+        }
+
+        // Keresés az eredeti/visszaalakított névvel
+        for (const [category, techniques] of Object.entries(TECHNIQUES[type])) {
+          if (techniques.includes(originalTechnique)) {
+            return category;
+          }
+        }
+        console.warn(
+          "Ismeretlen technika kategória:",
+          technique,
+          originalTechnique
+        ); // Debug log
+        return "unknown";
+      }
+
+      function displayResults(result) {
+        let html = "";
+
+        html += `
+                <div class="serve-result">
+                    <div class="serve-title">🏺 SZERVA</div>
+                    <div class="technique-name">${result.serve.technique}</div>
+                    <div class="badge badge-${result.serve.category}">
+                        ${CATEGORY_LABELS[result.serve.category]}
+                    </div>
+                </div>
+            `;
+
+        if (config.isFreeCount) {
+          html += `
+                    <div class="divider">⬇️ Utána ⬇️</div>
+                    <div class="touch-result">
+                        <div class="touch-number">🎲 Teljes Szabad Játék</div>
+                        <div class="technique-name">A játékos mindent eldönt</div>
+                        <div class="badge badge-free">🎯 Teljes Szabadság</div>
+                    </div>
+                `;
+        } else if (result.touches) {
+          html += `<div class="divider">⬇️ Utána ⬇️</div>`;
+          result.touches.forEach((touch) => {
+            if (touch.isFree) {
+              html += `
+                            <div class="touch-result">
+                                <div class="touch-number">⚡ ${touch.number}. Érintés</div>
+                                <div class="technique-name">Játékos dönt</div>
+                                <div class="badge badge-free">🎯 Szabad Választás</div>
+                            </div>
+                        `;
+            } else {
+              html += `
+                            <div class="touch-result">
+                                <div class="touch-number">⚡ ${
+                                  touch.number
+                                }. Érintés</div>
+                                <div class="technique-name">${
+                                  touch.technique
+                                }</div>
+                                <div class="badge badge-${touch.category}">
+                                    ${CATEGORY_LABELS[touch.category]}
+                                </div>
+                            </div>
+                        `;
+            }
+          });
+        }
+
+        // Add game launcher section
+        html += `
+            <div class="game-launcher">
+                <div class="game-launcher-title">🎮 Játék Indítása</div>
+                <div class="game-launcher-desc">Indíts játékot ezzel a generált konfigurációval!</div>
+                <button class="btn btn-game-start" onclick="startGameWithGeneratedConfig()">
+                    🏁 JÁTÉK INDÍTÁSA
+                </button>
+            </div>
+        `;
+
+        document.getElementById("results-content").innerHTML = html;
+
+        const mode = config.isFreeCount
+          ? "TELJES SZABAD JÁTÉK"
+          : `${config.touchCount} ÉRINTÉS`;
+        const modeText =
+          config.mode === "partner" ? "💎 Partner Mód" : "Alap Mód";
+        document.getElementById("stats").innerHTML = `
+                🎯 Mód: ${mode} | ${modeText} | 🎾 GānFoottennis Generátor
+            `;
+
+        const results = document.getElementById("results");
+        results.style.display = "none";
+        setTimeout(() => {
+          results.style.display = "block";
+          results.scrollIntoView({ behavior: "smooth" });
+        }, 10);
+      }
+
+      // === GAME FUNCTIONS ===
+      function startGameWithGeneratedConfig() {
+        console.log("🎮 Játék indítás - aktuális GENERATED_RESULT:", GENERATED_RESULT);
+        
+        if (!GENERATED_RESULT) {
+          alert("❌ Hiba: Nincs generált konfiguráció! Kérlek generálj egyet előbb.");
+          return;
+        }
+
+        gameState.currentConfig = {
+          mode: config.mode,
+          touchCount: config.touchCount,
+          isFreeCount: config.isFreeCount,
+          touches: { ...config.touches },
+          cultures: { ...config.cultures }
+        };
+        
+        gameState.generatedResult = GENERATED_RESULT;
+        console.log("✅ Játékba mentett eredmény:", gameState.generatedResult);
+        
+        const gameSection = document.getElementById("game-recording-section");
+        gameSection.classList.add("active");
+        gameSection.scrollIntoView({ behavior: "smooth" });
+        
+        initializeMatchTypeSelection();
+      }
+
+      function initializeMatchTypeSelection() {
+        const matchTypeBtns = document.querySelectorAll(".match-type-btn");
+        const initBtn = document.getElementById("init-game-btn");
+        
+        // Clear previous selections
+        matchTypeBtns.forEach(btn => btn.classList.remove("active"));
+        initBtn.disabled = true;
+        
+        // Handle 21 point match availability based on mode
+        const match21 = document.getElementById("game-match-21");
+        if (config.mode === "basic") {
+          match21.classList.add("disabled");
+        } else {
+          match21.classList.remove("disabled");
+        }
+        
+        // Add event listeners for match type selection
+        matchTypeBtns.forEach(btn => {
+          btn.addEventListener("click", function() {
+            if (this.classList.contains("disabled")) return;
+            
+            // Remove active class from all buttons
+            matchTypeBtns.forEach(b => b.classList.remove("active"));
+            
+            // Add active class to clicked button
+            this.classList.add("active");
+            
+            // Store selected match type
+            gameState.selectedPoints = parseInt(this.dataset.points);
+            gameState.selectedTime = parseInt(this.dataset.time);
+            gameState.matchType = this.dataset.points + "_points";
+            
+            // Enable init button
+            initBtn.disabled = false;
+            
+            // Update button text
+            initBtn.textContent = `🎮 GAME INDÍTÁSA (3 × ${gameState.selectedPoints} pontos match)`;
+          });
+        });
+      }
+
+      function initializeGameSession() {
+        if (!gameState.selectedPoints) return;
+        
+        // Initialize session data
+        gameState.sessionData = {
+          matches: [],
+          totalMatches: 3,
+          currentMatch: 0,
+          startTime: new Date().toISOString(),
+          endTime: null,
+          configuration: { ...gameState.currentConfig },
+          generatedResult: { ...gameState.generatedResult },
+          matchType: gameState.matchType,
+          points: gameState.selectedPoints,
+          timeLimit: gameState.selectedTime
+        };
+        
+        gameState.isActive = true;
+        
+        // Move to ready step
+        showGameStep("ready");
+        
+        // Load ready content
+        loadGameReadyContent();
+      }
+
+      function showGameStep(stepName) {
+        // Hide all steps
+        const steps = document.querySelectorAll(".game-step");
+        steps.forEach(step => {
+          step.classList.remove("active");
+          step.classList.add("hidden");
+        });
+        
+        // Show target step
+        const targetStep = document.getElementById(`game-step-${stepName}`);
+        if (targetStep) {
+          targetStep.classList.remove("hidden");
+          targetStep.classList.add("active");
+          targetStep.scrollIntoView({ behavior: "smooth" });
+        }
+        
+        gameState.currentStep = stepName;
+      }
+
+      function loadGameReadyContent() {
+        const content = document.getElementById("game-ready-content");
+        const matchNum = gameState.sessionData.currentMatch + 1;
+        
+        content.innerHTML = `
+          <div style="text-align: center;">
+            <div style="font-size: 2em; margin-bottom: 20px;">
+              🏆 Match ${matchNum}/3
+            </div>
+            <div style="font-size: 1.3em; margin-bottom: 20px; color: #667eea;">
+              ${gameState.selectedPoints} Pontos Match (${gameState.selectedTime} másodperc)
+            </div>
+            <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0;">
+              <h4 style="margin-bottom: 15px; color: #495057;">📋 Konfiguráció:</h4>
+              <div style="text-align: left; color: #6c757d;">
+                • Mód: ${gameState.currentConfig.mode === "partner" ? "💎 Partner Mód" : "Alap Mód"}<br>
+                • Érintések: ${gameState.currentConfig.isFreeCount ? "🎲 Szabad Választás" : gameState.currentConfig.touchCount + " érintés"}<br>
+                • Kultúrák: ${Object.entries(gameState.currentConfig.cultures).filter(([k,v]) => v).map(([k,v]) => k).join(", ") || "Nincs"}
+              </div>
+            </div>
+            <div style="margin-top: 30px;">
+              <button class="btn btn-primary" onclick="startMatch()" style="font-size: 1.2em; padding: 16px 32px;">
+                🏁 Match ${matchNum} INDÍTÁSA
+              </button>
+            </div>
+          </div>
+        `;
+      }
+
+      function startMatch() {
+        // Record match start
+        const matchData = {
+          matchNumber: gameState.sessionData.currentMatch + 1,
+          startTime: new Date().toISOString(),
+          endTime: null,
+          result: null,
+          points: gameState.selectedPoints,
+          timeLimit: gameState.selectedTime
+        };
+        
+        gameState.sessionData.matches.push(matchData);
+        
+        // Move to progress step
+        showGameStep("progress");
+        loadGameProgressContent();
+        
+        // Start timer
+        startMatchTimer();
+      }
+
+      function loadGameProgressContent() {
+        const content = document.getElementById("game-progress-content");
+        const matchNum = gameState.sessionData.currentMatch + 1;
+        
+        content.innerHTML = `
+          <div style="text-align: center;">
+            <div style="font-size: 1.8em; margin-bottom: 20px;">
+              ⏱️ Match ${matchNum} Folyamatban
+            </div>
+            <div id="timer-display" style="font-size: 3em; font-weight: bold; color: #28a745; margin: 20px 0;">
+              ${gameState.selectedTime}
+            </div>
+            <div style="background: #fff3cd; padding: 20px; border-radius: 8px; margin: 20px 0; border: 1px solid #ffeaa7;">
+              <h4 style="color: #856404; margin-bottom: 15px;">🎯 HASZNÁLT Konfiguráció (Generáltból):</h4>
+              <div id="active-config" style="color: #856404;">
+                <!-- Will be populated with current configuration -->
+              </div>
+            </div>
+            <div style="margin-top: 30px;">
+              <button class="btn btn-primary" onclick="finishMatch()" style="font-size: 1.1em; margin-right: 10px;">
+                ✅ Match Befejezése
+              </button>
+              <button class="btn" onclick="cancelMatch()" style="background: #dc3545; color: white;">
+                ❌ Megszakítás
+              </button>
+            </div>
+          </div>
+        `;
+        
+        // Load the active configuration display
+        loadActiveConfigDisplay();
+      }
+
+      function loadActiveConfigDisplay() {
+        const activeConfigDiv = document.getElementById("active-config");
+        if (!activeConfigDiv) return;
+        
+        const savedResult = gameState.generatedResult;
+        if (!savedResult) {
+          activeConfigDiv.innerHTML = `<div style="color: #dc3545;">❌ Hiba: Nincs mentett konfiguráció!</div>`;
+          return;
+        }
+        
+        console.log("✅ Mentett eredmény használata:", savedResult);
+        
+        let html = `
+          <div style="text-align: center;">
+            <div style="font-size: 1.2em; font-weight: bold; margin-bottom: 15px;">
+              🏺 SZERVA: ${savedResult.serve.technique}
+            </div>
+        `;
+        
+        if (savedResult.touches && savedResult.touches.length > 0) {
+          html += `<div style="margin-top: 15px;">`;
+          savedResult.touches.forEach(touch => {
+            html += `
+              <div style="margin: 8px 0; padding: 8px; background: rgba(255,255,255,0.5); border-radius: 4px;">
+                ⚡ ${touch.number}. Érintés: ${touch.isFree ? "🎯 Szabad Választás" : touch.technique}
+              </div>
+            `;
+          });
+          html += `</div>`;
+        } else if (gameState.currentConfig.isFreeCount) {
+          html += `
+            <div style="margin-top: 15px; padding: 12px; background: rgba(255,255,255,0.5); border-radius: 4px;">
+              🎲 Teljes Szabad Játék
+            </div>
+          `;
+        }
+        
+        html += `</div>`;
+        activeConfigDiv.innerHTML = html;
+      }
+
+
+      let matchTimer;
+      function startMatchTimer() {
+        let timeLeft = gameState.selectedTime;
+        const timerDisplay = document.getElementById("timer-display");
+        
+        matchTimer = setInterval(() => {
+          timeLeft--;
+          
+          if (timerDisplay) {
+            timerDisplay.textContent = timeLeft;
+            
+            // Change color as time runs out
+            if (timeLeft <= 10) {
+              timerDisplay.style.color = "#dc3545";
+            } else if (timeLeft <= 30) {
+              timerDisplay.style.color = "#ffc107";
+            } else {
+              timerDisplay.style.color = "#28a745";
+            }
+          }
+          
+          if (timeLeft <= 0) {
+            clearInterval(matchTimer);
+            finishMatch();
+          }
+        }, 1000);
+      }
+
+      function finishMatch() {
+        if (matchTimer) {
+          clearInterval(matchTimer);
+        }
+        
+        // Record match end
+        const currentMatch = gameState.sessionData.matches[gameState.sessionData.currentMatch];
+        currentMatch.endTime = new Date().toISOString();
+        currentMatch.result = "completed";
+        
+        gameState.sessionData.currentMatch++;
+        
+        // Check if session is complete
+        if (gameState.sessionData.currentMatch >= gameState.sessionData.totalMatches) {
+          // Session complete
+          gameState.sessionData.endTime = new Date().toISOString();
+          showGameStep("summary");
+          loadGameSummaryContent();
+        } else {
+          // More matches to play
+          showGameStep("ready");
+          loadGameReadyContent();
+        }
+      }
+
+      function cancelMatch() {
+        if (matchTimer) {
+          clearInterval(matchTimer);
+        }
+        
+        // Mark current match as cancelled
+        if (gameState.sessionData.matches.length > 0) {
+          const currentMatch = gameState.sessionData.matches[gameState.sessionData.currentMatch];
+          currentMatch.endTime = new Date().toISOString();
+          currentMatch.result = "cancelled";
+        }
+        
+        gameState.sessionData.endTime = new Date().toISOString();
+        
+        // Go to summary
+        showGameStep("summary");
+        loadGameSummaryContent();
+      }
+
+      function loadGameSummaryContent() {
+        const content = document.getElementById("game-summary-content");
+        const matches = gameState.sessionData.matches;
+        const completedMatches = matches.filter(m => m.result === "completed").length;
+        const totalTime = calculateTotalSessionTime();
+        
+        content.innerHTML = `
+          <div style="text-align: center;">
+            <div style="font-size: 2em; margin-bottom: 20px;">
+              🏆 Játék Befejezve!
+            </div>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin: 30px 0;">
+              <div style="background: #f8fff9; padding: 20px; border-radius: 8px; border: 1px solid #28a745;">
+                <div style="font-size: 2em; color: #28a745; margin-bottom: 10px;">
+                  ${completedMatches}/${gameState.sessionData.totalMatches}
+                </div>
+                <div style="color: #6c757d;">Befejezett Matchek</div>
+              </div>
+              
+              <div style="background: #f8f9ff; padding: 20px; border-radius: 8px; border: 1px solid #667eea;">
+                <div style="font-size: 2em; color: #667eea; margin-bottom: 10px;">
+                  ${Math.round(totalTime / 60)}m
+                </div>
+                <div style="color: #6c757d;">Összes Idő</div>
+              </div>
+              
+              <div style="background: #fff8e1; padding: 20px; border-radius: 8px; border: 1px solid #ffc107;">
+                <div style="font-size: 2em; color: #ffc107; margin-bottom: 10px;">
+                  ${gameState.selectedPoints}
+                </div>
+                <div style="color: #6c757d;">Pontos Matchek</div>
+              </div>
+            </div>
+            
+            <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0;">
+              <h4 style="margin-bottom: 15px; color: #495057;">📊 Match Részletek:</h4>
+              ${matches.map((match, index) => `
+                <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px; margin: 5px 0; background: white; border-radius: 4px;">
+                  <span>Match ${match.matchNumber}</span>
+                  <span style="color: ${match.result === 'completed' ? '#28a745' : '#dc3545'};">
+                    ${match.result === 'completed' ? '✅ Befejezve' : '❌ Megszakítva'}
+                  </span>
+                </div>
+              `).join('')}
+            </div>
+            
+            <div style="margin-top: 30px;">
+              <button class="btn btn-primary" onclick="startNewGameSession()" style="font-size: 1.1em; margin-right: 10px;">
+                🔄 Új Játék Indítása
+              </button>
+              <button class="btn" onclick="backToGenerator()" style="background: #6c757d; color: white;">
+                🏠 Vissza a Generátorhoz
+              </button>
+            </div>
+          </div>
+        `;
+      }
+
+      function calculateTotalSessionTime() {
+        if (!gameState.sessionData.startTime || !gameState.sessionData.endTime) return 0;
+        
+        const start = new Date(gameState.sessionData.startTime);
+        const end = new Date(gameState.sessionData.endTime);
+        return Math.round((end - start) / 1000); // seconds
+      }
+
+      function startNewGameSession() {
+        // Reset game state
+        gameState.isActive = false;
+        gameState.sessionData = {
+          matches: [],
+          totalMatches: 3,
+          currentMatch: 0,
+          startTime: null,
+          endTime: null
+        };
+        
+        // Go back to match type selection
+        showGameStep("match-type");
+        initializeMatchTypeSelection();
+      }
+
+      function backToGenerator() {
+        // Hide game section
+        const gameSection = document.getElementById("game-recording-section");
+        gameSection.classList.remove("active");
+        
+        // Reset game state
+        gameState.isActive = false;
+        gameState.currentConfig = null;
+        gameState.generatedResult = null;
+        GENERATED_RESULT = null;
+        gameState.sessionData = {
+          matches: [],
+          totalMatches: 3,
+          currentMatch: 0,
+          startTime: null,
+          endTime: null
+        };
+        
+        // Scroll back to results
+        const results = document.getElementById("results");
+        if (results) {
+          results.scrollIntoView({ behavior: "smooth" });
+        }
+      }
+    </script>
+  </body>
+</html>

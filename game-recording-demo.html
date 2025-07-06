@@ -1,0 +1,1088 @@
+<!DOCTYPE html>
+<html lang="hu">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>🎾 GānFoottennis - Játék Demo</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
+          Roboto, sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        color: white;
+        padding: 20px;
+      }
+
+      .container {
+        max-width: 900px;
+        margin: 0 auto;
+        background: white;
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      }
+
+      .header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 24px;
+        text-align: center;
+      }
+
+      .header h1 {
+        font-size: 2em;
+        margin-bottom: 8px;
+      }
+
+      .content {
+        padding: 30px;
+        color: #333;
+      }
+
+      .step {
+        background: #f8f9fa;
+        border-radius: 12px;
+        padding: 24px;
+        margin-bottom: 24px;
+        border-left: 4px solid #667eea;
+      }
+
+      .step.active {
+        border-left-color: #28a745;
+        background: #f8fff9;
+      }
+
+      .step.completed {
+        opacity: 0.7;
+        border-left-color: #6c757d;
+      }
+
+      .step-title {
+        font-size: 1.3em;
+        font-weight: 600;
+        margin-bottom: 12px;
+        color: #495057;
+      }
+
+      .generated-config {
+        background: linear-gradient(135deg, #fff3cd, #ffeaa7);
+        border-radius: 8px;
+        padding: 16px;
+        margin: 16px 0;
+      }
+
+      .config-item {
+        margin: 8px 0;
+        font-weight: 500;
+      }
+
+      .match-type-selector {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 16px;
+        margin: 20px 0;
+      }
+
+      .match-type-btn {
+        background: white;
+        border: 2px solid #dee2e6;
+        border-radius: 8px;
+        padding: 20px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        text-align: center;
+      }
+
+      .match-type-btn:hover {
+        border-color: #667eea;
+        transform: translateY(-2px);
+      }
+
+      .match-type-btn.active {
+        border-color: #28a745;
+        background: #f8fff9;
+      }
+
+      .match-type-btn.disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        pointer-events: none;
+      }
+
+      .match-points {
+        font-size: 1.5em;
+        font-weight: 700;
+        color: #667eea;
+        margin-bottom: 8px;
+      }
+
+      .match-time {
+        color: #6c757d;
+        font-size: 0.9em;
+      }
+
+      .partner-only {
+        background: linear-gradient(135deg, #ffd700, #ffed4e);
+        color: #333;
+        padding: 4px 8px;
+        border-radius: 12px;
+        font-size: 0.7em;
+        font-weight: 600;
+        margin-top: 8px;
+        display: inline-block;
+      }
+
+      .game-progress {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 16px;
+        margin: 24px 0;
+      }
+
+      .match-card {
+        background: white;
+        border: 2px solid #dee2e6;
+        border-radius: 8px;
+        padding: 16px;
+        text-align: center;
+        position: relative;
+      }
+
+      .match-card.ready {
+        border-color: #ffc107;
+        background: #fff8e1;
+      }
+
+      .match-card.current {
+        border-color: #28a745;
+        background: #f8fff9;
+      }
+
+      .match-card.completed {
+        border-color: #6c757d;
+        background: #f8f9fa;
+      }
+
+      .match-break {
+        background: linear-gradient(135deg, #17a2b8, #20c997);
+        color: white;
+        padding: 20px;
+        border-radius: 12px;
+        text-align: center;
+        margin: 20px 0;
+      }
+
+      .break-title {
+        font-size: 1.3em;
+        font-weight: 600;
+        margin-bottom: 8px;
+      }
+
+      .break-message {
+        opacity: 0.9;
+        margin-bottom: 16px;
+      }
+
+      .match-number {
+        font-size: 1.2em;
+        font-weight: 600;
+        margin-bottom: 8px;
+      }
+
+      .match-status {
+        font-size: 0.9em;
+        color: #6c757d;
+      }
+
+      .timer {
+        font-size: 2em;
+        font-weight: 700;
+        color: #667eea;
+        margin: 20px 0;
+        text-align: center;
+      }
+
+      .timer.warning {
+        color: #ffc107;
+      }
+
+      .timer.danger {
+        color: #dc3545;
+      }
+
+      .score-input {
+        display: grid;
+        grid-template-columns: 1fr auto 1fr;
+        gap: 16px;
+        align-items: center;
+        margin: 20px 0;
+      }
+
+      .player-score {
+        text-align: center;
+      }
+
+      .player-label {
+        font-weight: 600;
+        margin-bottom: 8px;
+      }
+
+      .score-display {
+        font-size: 2em;
+        font-weight: 700;
+        color: #667eea;
+        margin-bottom: 12px;
+      }
+
+      .score-buttons {
+        display: flex;
+        gap: 8px;
+        justify-content: center;
+      }
+
+      .score-btn {
+        width: 40px;
+        height: 40px;
+        border: none;
+        border-radius: 6px;
+        font-size: 1.2em;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+      }
+
+      .score-btn.plus {
+        background: #28a745;
+        color: white;
+      }
+
+      .score-btn.minus {
+        background: #dc3545;
+        color: white;
+      }
+
+      .score-btn:hover {
+        transform: scale(1.1);
+      }
+
+      .vs {
+        font-size: 1.5em;
+        font-weight: 700;
+        color: #667eea;
+      }
+
+      .action-buttons {
+        display: flex;
+        gap: 12px;
+        justify-content: center;
+        margin: 24px 0;
+      }
+
+      .btn {
+        padding: 12px 24px;
+        border: none;
+        border-radius: 8px;
+        font-size: 1em;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+      }
+
+      .btn-primary {
+        background: #667eea;
+        color: white;
+      }
+
+      .btn-success {
+        background: #28a745;
+        color: white;
+      }
+
+      .btn-warning {
+        background: #ffc107;
+        color: #333;
+      }
+
+      .btn-secondary {
+        background: #6c757d;
+        color: white;
+      }
+
+      .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+      }
+
+      .btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        pointer-events: none;
+      }
+
+      .match-winner {
+        background: linear-gradient(135deg, #28a745, #20c997);
+        color: white;
+        padding: 16px;
+        border-radius: 8px;
+        text-align: center;
+        margin: 16px 0;
+        font-weight: 600;
+      }
+
+      .game-summary {
+        background: #f8f9fa;
+        border-radius: 12px;
+        padding: 24px;
+        margin-top: 24px;
+      }
+
+      .summary-title {
+        font-size: 1.4em;
+        font-weight: 600;
+        margin-bottom: 16px;
+        text-align: center;
+      }
+
+      .summary-stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 16px;
+        margin-top: 16px;
+      }
+
+      .stat-item {
+        text-align: center;
+        padding: 12px;
+        background: white;
+        border-radius: 8px;
+      }
+
+      .stat-number {
+        font-size: 1.5em;
+        font-weight: 700;
+        color: #667eea;
+      }
+
+      .stat-label {
+        font-size: 0.9em;
+        color: #6c757d;
+      }
+
+      .hidden {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1>🎾 GānFoottennis</h1>
+        <p>Játék Rögzítő Rendszer Demo</p>
+      </div>
+
+      <div class="content">
+        <!-- STEP 1: Generated Configuration -->
+        <div class="step completed" id="step-config">
+          <div class="step-title">1️⃣ Generált Konfiguráció</div>
+          <div class="generated-config">
+            <div class="config-item">
+              🏺 <strong>Szerva:</strong> Domináns Oldal + Belső
+            </div>
+            <div class="config-item">
+              ⚡ <strong>1. Érintés:</strong> Gyengébb Oldal + Rüszt
+            </div>
+            <div class="config-item">
+              ⚡ <strong>2. Érintés:</strong> Fejelés
+            </div>
+            <div class="config-item">
+              🎯 <strong>Mód:</strong>
+              <span id="current-mode">Partner Mód</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- STEP 2: Match Type Selection -->
+        <div class="step active" id="step-match-type">
+          <div class="step-title">2️⃣ Match Típus Választása</div>
+          <div class="match-type-selector">
+            <div class="match-type-btn" data-points="3" data-time="60">
+              <div class="match-points">3 PONT</div>
+              <div class="match-time">1 perc</div>
+            </div>
+            <div class="match-type-btn" data-points="11" data-time="180">
+              <div class="match-points">11 PONT</div>
+              <div class="match-time">3 perc</div>
+            </div>
+            <div
+              class="match-type-btn"
+              data-points="21"
+              data-time="300"
+              id="match-21"
+            >
+              <div class="match-points">21 PONT</div>
+              <div class="match-time">5 perc</div>
+              <div class="partner-only">💎 Partner Mód</div>
+            </div>
+          </div>
+          <div class="action-buttons">
+            <button
+              class="btn btn-primary"
+              onclick="initializeGame()"
+              id="start-game-btn"
+              disabled
+            >
+              🎮 GAME Indítása (3 Match sorozat)
+            </button>
+          </div>
+        </div>
+
+        <!-- STEP 2.5: Game Initialized, Ready for Match -->
+        <div class="step hidden" id="step-game-ready">
+          <div class="step-title">🎮 Game Elkezdve - Match Indítás</div>
+          <div class="game-progress">
+            <div class="match-card ready" id="match-1-ready">
+              <div class="match-number">Match 1</div>
+              <div class="match-status">Kész az indításra</div>
+            </div>
+            <div class="match-card" id="match-2-ready">
+              <div class="match-number">Match 2</div>
+              <div class="match-status">Várakozik</div>
+            </div>
+            <div class="match-card" id="match-3-ready">
+              <div class="match-number">Match 3</div>
+              <div class="match-status">Várakozik</div>
+            </div>
+          </div>
+
+          <div style="text-align: center; margin: 24px 0">
+            <div
+              style="font-size: 1.2em; font-weight: 600; margin-bottom: 12px"
+            >
+              🏁 <span id="current-match-title">1. Match</span> indítása
+            </div>
+            <div style="color: #6c757d; margin-bottom: 20px">
+              <span id="match-type-display">3 pont - 1 perc</span>
+            </div>
+          </div>
+
+          <div class="action-buttons">
+            <button
+              class="btn btn-success"
+              onclick="startCurrentMatch()"
+              id="start-match-btn"
+            >
+              ▶️ MATCH INDÍTÁSA
+            </button>
+            <button class="btn btn-secondary" onclick="resetGame()">
+              🔄 Game Újrakezdése
+            </button>
+          </div>
+        </div>
+
+        <!-- STEP 3: Game Progress -->
+        <div class="step hidden" id="step-game">
+          <div class="step-title">3️⃣ Játék Folyamatban</div>
+
+          <div class="game-progress">
+            <div class="match-card current" id="match-1">
+              <div class="match-number">Match 1</div>
+              <div class="match-status">Folyamatban</div>
+            </div>
+            <div class="match-card" id="match-2">
+              <div class="match-number">Match 2</div>
+              <div class="match-status">Várakozik</div>
+            </div>
+            <div class="match-card" id="match-3">
+              <div class="match-number">Match 3</div>
+              <div class="match-status">Várakozik</div>
+            </div>
+          </div>
+
+          <div class="timer" id="timer">5:00</div>
+
+          <div class="score-input">
+            <div class="player-score">
+              <div class="player-label">👤 Játékos A</div>
+              <div class="score-display" id="score-a">0</div>
+              <div class="score-buttons">
+                <button class="score-btn plus" onclick="changeScore('A', 1)">
+                  +
+                </button>
+                <button class="score-btn minus" onclick="changeScore('A', -1)">
+                  -
+                </button>
+              </div>
+            </div>
+            <div class="vs">VS</div>
+            <div class="player-score">
+              <div class="player-label">👤 Játékos B</div>
+              <div class="score-display" id="score-b">0</div>
+              <div class="score-buttons">
+                <button class="score-btn plus" onclick="changeScore('B', 1)">
+                  +
+                </button>
+                <button class="score-btn minus" onclick="changeScore('B', -1)">
+                  -
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="action-buttons">
+            <button
+              class="btn btn-success"
+              onclick="finishMatch()"
+              id="finish-match-btn"
+            >
+              ✅ Match Befejezése
+            </button>
+            <button
+              class="btn btn-warning"
+              onclick="pauseGame()"
+              id="pause-btn"
+            >
+              ⏸️ Szünet
+            </button>
+            <button class="btn btn-secondary" onclick="resetMatch()">
+              🔄 Match Újra
+            </button>
+          </div>
+
+          <div class="match-winner hidden" id="match-winner"></div>
+
+          <!-- Match Break Screen -->
+          <div class="match-break hidden" id="match-break">
+            <div class="break-title">🏁 Match Befejezve!</div>
+            <div class="break-message" id="break-message">
+              Felkészülés a következő match-re...
+            </div>
+            <div class="action-buttons">
+              <button
+                class="btn btn-primary"
+                onclick="continueToNextMatch()"
+                id="next-match-btn"
+              >
+                ➡️ Következő Match Indítása
+              </button>
+              <button class="btn btn-secondary" onclick="viewCurrentResults()">
+                📊 Jelenlegi Állás
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- STEP 4: Game Summary -->
+        <div class="step hidden" id="step-summary">
+          <div class="step-title">4️⃣ Játék Összefoglaló</div>
+          <div class="game-summary">
+            <div class="summary-title">🏆 GAME BEFEJEZVE</div>
+            <div id="game-result"></div>
+            <div class="summary-stats">
+              <div class="stat-item">
+                <div class="stat-number" id="total-time">0:00</div>
+                <div class="stat-label">Összes Idő</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-number" id="total-points">0</div>
+                <div class="stat-label">Összes Pont</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-number" id="game-winner">-</div>
+                <div class="stat-label">Game Győztes</div>
+              </div>
+            </div>
+            <div class="action-buttons">
+              <button class="btn btn-primary" onclick="saveGame()">
+                💾 Játék Mentése
+              </button>
+              <button class="btn btn-secondary" onclick="newGame()">
+                🎮 Új Játék
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // === GAME STATE ===
+      let gameState = {
+        config: {
+          serve: "Domináns Oldal + Belső",
+          touches: ["Gyengébb Oldal + Rüszt", "Fejelés"],
+          mode: "partner",
+        },
+        matchType: null,
+        currentMatch: 1,
+        matches: [
+          { playerA: 0, playerB: 0, winner: null, duration: 0 },
+          { playerA: 0, playerB: 0, winner: null, duration: 0 },
+          { playerA: 0, playerB: 0, winner: null, duration: 0 },
+        ],
+        timer: null,
+        timeLeft: 0,
+        totalTime: 0,
+        isPaused: false,
+        gameStarted: false,
+      };
+
+      // === INITIALIZATION ===
+      document.addEventListener("DOMContentLoaded", function () {
+        initMatchTypeSelector();
+        updateModeDisplay();
+      });
+
+      function initMatchTypeSelector() {
+        document.querySelectorAll(".match-type-btn").forEach((btn) => {
+          btn.addEventListener("click", function () {
+            // Check if 21 point is disabled in basic mode
+            if (
+              this.dataset.points === "21" &&
+              gameState.config.mode === "basic"
+            ) {
+              return;
+            }
+
+            document
+              .querySelectorAll(".match-type-btn")
+              .forEach((b) => b.classList.remove("active"));
+            this.classList.add("active");
+
+            gameState.matchType = {
+              points: parseInt(this.dataset.points),
+              time: parseInt(this.dataset.time),
+            };
+
+            document.getElementById("start-game-btn").disabled = false;
+          });
+        });
+      }
+
+      function updateModeDisplay() {
+        const modeSpan = document.getElementById("current-mode");
+        const match21 = document.getElementById("match-21");
+
+        if (gameState.config.mode === "basic") {
+          modeSpan.textContent = "Alap Mód";
+          match21.classList.add("disabled");
+        } else {
+          modeSpan.textContent = "💎 Partner Mód";
+          match21.classList.remove("disabled");
+        }
+      }
+
+      // === GAME FLOW ===
+      function initializeGame() {
+        if (!gameState.matchType) return;
+
+        gameState.gameStarted = true;
+
+        // Update UI - Move to game ready state
+        document.getElementById("step-match-type").classList.remove("active");
+        document.getElementById("step-match-type").classList.add("completed");
+        document.getElementById("step-game-ready").classList.remove("hidden");
+        document.getElementById("step-game-ready").classList.add("active");
+
+        // Update match type display
+        const matchTypeDisplay = document.getElementById("match-type-display");
+        matchTypeDisplay.textContent = `${
+          gameState.matchType.points
+        } pont - ${Math.floor(gameState.matchType.time / 60)} perc`;
+
+        // Initialize ready screen match cards
+        updateReadyMatchCards();
+
+        console.log("Game initialized, ready for first match:", gameState);
+      }
+
+      function startCurrentMatch() {
+        // Initialize match timer
+        gameState.timeLeft = gameState.matchType.time;
+
+        // Hide game ready, show game in progress
+        document.getElementById("step-game-ready").classList.remove("active");
+        document.getElementById("step-game-ready").classList.add("completed");
+        document.getElementById("step-game").classList.remove("hidden");
+        document.getElementById("step-game").classList.add("active");
+
+        // Reset scores for current match
+        document.getElementById("score-a").textContent = "0";
+        document.getElementById("score-b").textContent = "0";
+
+        // Update match cards
+        updateMatchCards();
+
+        // Start timer
+        startTimer();
+
+        console.log(`Match ${gameState.currentMatch} started`);
+      }
+
+      function startTimer() {
+        gameState.timer = setInterval(() => {
+          if (!gameState.isPaused) {
+            gameState.timeLeft--;
+            gameState.totalTime++;
+            updateTimerDisplay();
+
+            if (gameState.timeLeft <= 0) {
+              finishMatch();
+            }
+          }
+        }, 1000);
+      }
+
+      function updateTimerDisplay() {
+        const minutes = Math.floor(gameState.timeLeft / 60);
+        const seconds = gameState.timeLeft % 60;
+        const timerEl = document.getElementById("timer");
+
+        timerEl.textContent = `${minutes}:${seconds
+          .toString()
+          .padStart(2, "0")}`;
+
+        // Color coding
+        if (gameState.timeLeft <= 10) {
+          timerEl.className = "timer danger";
+        } else if (gameState.timeLeft <= 30) {
+          timerEl.className = "timer warning";
+        } else {
+          timerEl.className = "timer";
+        }
+      }
+
+      function changeScore(player, change) {
+        const currentMatch = gameState.matches[gameState.currentMatch - 1];
+        const scoreKey = player === "A" ? "playerA" : "playerB";
+
+        currentMatch[scoreKey] = Math.max(0, currentMatch[scoreKey] + change);
+
+        document.getElementById(`score-${player.toLowerCase()}`).textContent =
+          currentMatch[scoreKey];
+
+        // Check for match win
+        checkMatchWin();
+      }
+
+      function checkMatchWin() {
+        const currentMatch = gameState.matches[gameState.currentMatch - 1];
+        const targetPoints = gameState.matchType.points;
+
+        if (
+          currentMatch.playerA >= targetPoints ||
+          currentMatch.playerB >= targetPoints
+        ) {
+          const winner = currentMatch.playerA >= targetPoints ? "A" : "B";
+          currentMatch.winner = winner;
+          currentMatch.duration = gameState.matchType.time - gameState.timeLeft;
+
+          showMatchWinner(winner);
+          document.getElementById("finish-match-btn").textContent =
+            "➡️ Következő Match";
+        }
+      }
+
+      function showMatchWinner(winner) {
+        const winnerEl = document.getElementById("match-winner");
+        winnerEl.textContent = `🏆 Match ${gameState.currentMatch} Győztes: Játékos ${winner}`;
+        winnerEl.classList.remove("hidden");
+      }
+
+      function finishMatch() {
+        clearInterval(gameState.timer);
+
+        const currentMatch = gameState.matches[gameState.currentMatch - 1];
+
+        // If no winner determined by score, determine by time/score
+        if (!currentMatch.winner) {
+          if (currentMatch.playerA > currentMatch.playerB) {
+            currentMatch.winner = "A";
+          } else if (currentMatch.playerB > currentMatch.playerA) {
+            currentMatch.winner = "B";
+          } else {
+            currentMatch.winner = "DRAW";
+          }
+          currentMatch.duration = gameState.matchType.time - gameState.timeLeft;
+        }
+
+        // Update match card
+        const matchCard = document.getElementById(
+          `match-${gameState.currentMatch}`
+        );
+        matchCard.classList.remove("current");
+        matchCard.classList.add("completed");
+        matchCard.querySelector(
+          ".match-status"
+        ).textContent = `Vége (${currentMatch.playerA}-${currentMatch.playerB})`;
+
+        // Show match results and break screen
+        showMatchBreak();
+      }
+
+      function showMatchBreak() {
+        const currentMatch = gameState.matches[gameState.currentMatch - 1];
+        const breakMessage = document.getElementById("break-message");
+        const nextMatchBtn = document.getElementById("next-match-btn");
+
+        // Hide game controls, show break screen
+        document.querySelector(".timer").style.display = "none";
+        document.querySelector(".score-input").style.display = "none";
+        document.querySelector(".action-buttons").style.display = "none";
+        document.getElementById("match-break").classList.remove("hidden");
+
+        if (gameState.currentMatch < 3) {
+          // More matches to play
+          breakMessage.textContent = `Match ${
+            gameState.currentMatch
+          } befejezve! Felkészülés a ${
+            gameState.currentMatch + 1
+          }. match-re...`;
+          nextMatchBtn.textContent = `➡️ ${
+            gameState.currentMatch + 1
+          }. Match Indítása`;
+          nextMatchBtn.style.display = "inline-block";
+        } else {
+          // Game finished
+          breakMessage.textContent = "Minden match befejezve! Game vége.";
+          nextMatchBtn.textContent = "🏆 Eredmények Megtekintése";
+          nextMatchBtn.setAttribute("onclick", "finishGame()");
+        }
+      }
+
+      function continueToNextMatch() {
+        if (gameState.currentMatch >= 3) {
+          finishGame();
+          return;
+        }
+
+        // Prepare for next match
+        gameState.currentMatch++;
+
+        // Hide game screen, show ready screen for next match
+        document.getElementById("step-game").classList.remove("active");
+        document.getElementById("step-game").classList.add("completed");
+        document
+          .getElementById("step-game-ready")
+          .classList.remove("completed");
+        document.getElementById("step-game-ready").classList.add("active");
+
+        // Reset break screen
+        document.getElementById("match-break").classList.add("hidden");
+        document.querySelector(".timer").style.display = "block";
+        document.querySelector(".score-input").style.display = "grid";
+        document.querySelector(".action-buttons").style.display = "flex";
+
+        // Update ready screen for next match
+        document.getElementById(
+          "current-match-title"
+        ).textContent = `${gameState.currentMatch}. Match`;
+
+        // Update match cards in ready screen
+        updateReadyMatchCards();
+
+        console.log(`Ready for match ${gameState.currentMatch}`);
+      }
+
+      function updateMatchCards() {
+        // Clear all states first
+        for (let i = 1; i <= 3; i++) {
+          const card = document.getElementById(`match-${i}`);
+          if (!card) continue; // Skip if element doesn't exist yet
+
+          card.classList.remove("current", "completed");
+          if (i === gameState.currentMatch) {
+            card.classList.add("current");
+            card.querySelector(".match-status").textContent = "Folyamatban";
+          } else if (i < gameState.currentMatch) {
+            card.classList.add("completed");
+          } else {
+            card.querySelector(".match-status").textContent = "Várakozik";
+          }
+        }
+      }
+
+      function updateReadyMatchCards() {
+        // Update the ready screen match cards
+        for (let i = 1; i <= 3; i++) {
+          const card = document.getElementById(`match-${i}-ready`);
+          if (!card) continue; // Skip if element doesn't exist yet
+
+          card.classList.remove("ready", "completed");
+          if (i === gameState.currentMatch) {
+            card.classList.add("ready");
+            card.querySelector(".match-status").textContent =
+              "Kész az indításra";
+          } else if (i < gameState.currentMatch) {
+            card.classList.add("completed");
+            const match = gameState.matches[i - 1];
+            card.querySelector(
+              ".match-status"
+            ).textContent = `Vége (${match.playerA}-${match.playerB})`;
+          } else {
+            card.querySelector(".match-status").textContent = "Várakozik";
+          }
+        }
+      }
+
+      function viewCurrentResults() {
+        let results = `📊 Jelenlegi Állás:\n\n`;
+        for (let i = 0; i < gameState.currentMatch; i++) {
+          const match = gameState.matches[i];
+          if (match.winner) {
+            results += `Match ${i + 1}: ${match.playerA}-${match.playerB} `;
+            results += `(Győztes: ${
+              match.winner === "A"
+                ? "Játékos A"
+                : match.winner === "B"
+                ? "Játékos B"
+                : "Döntetlen"
+            })\n`;
+          }
+        }
+
+        // Calculate current game standing
+        let aWins = 0,
+          bWins = 0;
+        gameState.matches.forEach((match, index) => {
+          if (index < gameState.currentMatch && match.winner === "A") aWins++;
+          if (index < gameState.currentMatch && match.winner === "B") bWins++;
+        });
+
+        results += `\n🏆 Game állás: Játékos A: ${aWins} - Játékos B: ${bWins}`;
+        alert(results);
+      }
+
+      function finishGame() {
+        // Calculate game winner
+        let aWins = 0,
+          bWins = 0;
+        gameState.matches.forEach((match) => {
+          if (match.winner === "A") aWins++;
+          if (match.winner === "B") bWins++;
+        });
+
+        const gameWinner =
+          aWins > bWins
+            ? "Játékos A"
+            : bWins > aWins
+            ? "Játékos B"
+            : "Döntetlen";
+
+        // Update summary
+        const totalPoints = gameState.matches.reduce(
+          (sum, match) => sum + match.playerA + match.playerB,
+          0
+        );
+        const totalMinutes = Math.floor(gameState.totalTime / 60);
+        const totalSeconds = gameState.totalTime % 60;
+
+        document.getElementById(
+          "total-time"
+        ).textContent = `${totalMinutes}:${totalSeconds
+          .toString()
+          .padStart(2, "0")}`;
+        document.getElementById("total-points").textContent = totalPoints;
+        document.getElementById("game-winner").textContent = gameWinner;
+
+        // Show detailed results
+        let resultHTML = '<div style="margin: 16px 0;">';
+        gameState.matches.forEach((match, index) => {
+          resultHTML += `
+                    <div style="margin: 8px 0; padding: 12px; background: white; border-radius: 6px;">
+                        <strong>Match ${index + 1}:</strong> 
+                        Játékos A: ${match.playerA} - Játékos B: ${
+            match.playerB
+          } 
+                        (Győztes: ${
+                          match.winner === "A"
+                            ? "Játékos A"
+                            : match.winner === "B"
+                            ? "Játékos B"
+                            : "Döntetlen"
+                        })
+                        <br><small>Időtartam: ${Math.floor(
+                          match.duration / 60
+                        )}:${(match.duration % 60)
+            .toString()
+            .padStart(2, "0")}</small>
+                    </div>
+                `;
+        });
+        resultHTML += "</div>";
+        document.getElementById("game-result").innerHTML = resultHTML;
+
+        // Show summary
+        document.getElementById("step-game").classList.remove("active");
+        document.getElementById("step-game").classList.add("completed");
+        document.getElementById("step-summary").classList.remove("hidden");
+        document.getElementById("step-summary").classList.add("active");
+      }
+
+      function pauseGame() {
+        gameState.isPaused = !gameState.isPaused;
+        const pauseBtn = document.getElementById("pause-btn");
+        pauseBtn.textContent = gameState.isPaused
+          ? "▶️ Folytatás"
+          : "⏸️ Szünet";
+      }
+
+      function resetMatch() {
+        if (confirm("Biztosan újrakezded ezt a match-et?")) {
+          const currentMatch = gameState.matches[gameState.currentMatch - 1];
+          currentMatch.playerA = 0;
+          currentMatch.playerB = 0;
+          currentMatch.winner = null;
+
+          gameState.timeLeft = gameState.matchType.time;
+          document.getElementById("score-a").textContent = "0";
+          document.getElementById("score-b").textContent = "0";
+          document.getElementById("match-winner").classList.add("hidden");
+
+          // Restart timer
+          clearInterval(gameState.timer);
+          startTimer();
+        }
+      }
+
+      function resetGame() {
+        if (confirm("Biztosan újrakezded az egész game-et?")) {
+          location.reload();
+        }
+      }
+
+      function saveGame() {
+        // Save to localStorage
+        const gameData = {
+          timestamp: new Date().toISOString(),
+          config: gameState.config,
+          matchType: gameState.matchType,
+          matches: gameState.matches,
+          totalTime: gameState.totalTime,
+          winner: document.getElementById("game-winner").textContent,
+        };
+
+        let savedGames = JSON.parse(
+          localStorage.getItem("ganball-saved-games") || "[]"
+        );
+        savedGames.push(gameData);
+        localStorage.setItem("ganball-saved-games", JSON.stringify(savedGames));
+
+        alert("Játék elmentve! 💾");
+        console.log("Game saved:", gameData);
+      }
+
+      function newGame() {
+        if (confirm("Új game indítása? (Jelenlegi eredmények elvesznek)")) {
+          location.reload();
+        }
+      }
+    </script>
+  </body>
+</html>
