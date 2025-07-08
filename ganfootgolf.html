@@ -1,0 +1,966 @@
+<!DOCTYPE html>
+<html lang="hu">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>🏌️‍♂️⚽ GānFootgolf</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
+          Roboto, sans-serif;
+        background: linear-gradient(135deg, #2e8b57 0%, #228b22 100%);
+        min-height: 100vh;
+        padding: 20px;
+        color: white;
+      }
+
+      .container {
+        max-width: 1000px;
+        margin: 0 auto;
+        background: white;
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      }
+
+      .header {
+        background: linear-gradient(135deg, #2e8b57 0%, #228b22 100%);
+        color: white;
+        padding: 40px;
+        text-align: center;
+        position: relative;
+      }
+
+      .mode-toggle {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        display: flex;
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 25px;
+        padding: 4px;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+      }
+
+      .mode-btn {
+        padding: 8px 16px;
+        border: none;
+        background: transparent;
+        color: white;
+        border-radius: 20px;
+        cursor: pointer;
+        font-size: 0.9em;
+        font-weight: 500;
+        transition: all 0.2s ease;
+        opacity: 0.7;
+      }
+
+      .mode-btn.active {
+        background: rgba(255, 255, 255, 0.3);
+        opacity: 1;
+        font-weight: 600;
+      }
+
+      .header h1 {
+        font-size: 2.5em;
+        margin-bottom: 8px;
+      }
+
+      .header p {
+        font-size: 1.1em;
+        opacity: 0.9;
+      }
+
+      .back-btn {
+        background: rgba(255, 255, 255, 0.2);
+        border: none;
+        color: white;
+        padding: 8px 16px;
+        border-radius: 20px;
+        cursor: pointer;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        margin-top: 20px;
+      }
+
+      .back-btn:hover {
+        background: rgba(255, 255, 255, 0.3);
+      }
+
+      .content {
+        padding: 40px;
+        color: #333;
+      }
+
+      .section {
+        background: #f8fff8;
+        border-radius: 12px;
+        padding: 32px;
+        margin-bottom: 32px;
+        border: 1px solid #c8e6c9;
+      }
+
+      .section-title {
+        font-size: 1.25em;
+        font-weight: 600;
+        color: #2e7d32;
+        margin-bottom: 24px;
+        text-align: center;
+      }
+
+      .cycle-length-selector {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 16px;
+        margin-bottom: 24px;
+      }
+
+      .cycle-btn {
+        padding: 16px 20px;
+        border: 2px solid #c8e6c9;
+        background: white;
+        color: #2e7d32;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 1em;
+        font-weight: 500;
+        transition: all 0.2s ease;
+        text-align: center;
+      }
+
+      .cycle-btn:hover {
+        border-color: #4caf50;
+        background: #f8fff8;
+      }
+
+      .cycle-btn.active {
+        background: #4caf50;
+        color: white;
+        border-color: #4caf50;
+      }
+
+      .cycle-btn.partner-length {
+        border-color: #ff9800;
+        color: #ff9800;
+      }
+
+      .cycle-btn.partner-length.active {
+        background: #ff9800;
+        color: white;
+      }
+
+      .cycle-btn.free-mode {
+        border-color: #17a2b8;
+        color: #17a2b8;
+      }
+
+      .cycle-btn.free-mode.active {
+        background: #17a2b8;
+        color: white;
+      }
+
+      .cultures-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+      }
+
+      .culture-card {
+        background: white;
+        border: 2px solid #c8e6c9;
+        border-radius: 12px;
+        padding: 24px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        text-align: center;
+      }
+
+      .culture-card:hover {
+        border-color: #4caf50;
+        transform: translateY(-2px);
+      }
+
+      .culture-card.active {
+        border-color: #2e7d32;
+        background: #f8fff8;
+      }
+
+      .checkbox {
+        width: 24px;
+        height: 24px;
+        border: 2px solid #c8e6c9;
+        border-radius: 4px;
+        margin: 0 auto 16px;
+        position: relative;
+        transition: all 0.2s ease;
+      }
+
+      .culture-card.active .checkbox {
+        background: #2e7d32;
+        border-color: #2e7d32;
+      }
+
+      .culture-card.active .checkbox::after {
+        content: "✓";
+        position: absolute;
+        top: -1px;
+        left: 4px;
+        color: white;
+        font-weight: bold;
+        font-size: 14px;
+      }
+
+      .culture-title {
+        font-size: 1.1em;
+        font-weight: 600;
+        color: #2e7d32;
+        margin-bottom: 8px;
+      }
+
+      .culture-desc {
+        font-size: 0.9em;
+        color: #6c757d;
+      }
+
+      .partner-config {
+        margin-top: 24px;
+        display: none;
+      }
+
+      .partner-config.show {
+        display: block;
+      }
+
+      .position-config {
+        background: white;
+        border: 1px solid #c8e6c9;
+        border-radius: 8px;
+        padding: 20px;
+        margin-bottom: 16px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .position-label {
+        font-weight: 600;
+        color: #2e7d32;
+      }
+
+      .config-toggle {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+      }
+
+      .config-btn {
+        padding: 8px 16px;
+        border: 2px solid #c8e6c9;
+        background: white;
+        color: #2e7d32;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 0.9em;
+        font-weight: 500;
+        transition: all 0.2s ease;
+      }
+
+      .config-btn:hover {
+        border-color: #4caf50;
+      }
+
+      .config-btn.active {
+        background: #4caf50;
+        color: white;
+        border-color: #4caf50;
+      }
+
+      .config-btn.free {
+        border-color: #17a2b8;
+        color: #17a2b8;
+      }
+
+      .config-btn.free.active {
+        background: #17a2b8;
+        color: white;
+      }
+
+      .generate-section {
+        text-align: center;
+        margin: 40px 0;
+      }
+
+      .generate-btn {
+        background: linear-gradient(135deg, #2e8b57 0%, #228b22 100%);
+        color: white;
+        border: none;
+        padding: 16px 40px;
+        font-size: 1.1em;
+        font-weight: 600;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        box-shadow: 0 4px 12px rgba(46, 139, 87, 0.3);
+      }
+
+      .generate-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(46, 139, 87, 0.4);
+      }
+
+      .results {
+        background: #f8fff8;
+        border-radius: 12px;
+        margin-top: 32px;
+        border: 1px solid #c8e6c9;
+        display: none;
+      }
+
+      .results-header {
+        background: linear-gradient(135deg, #2e8b57 0%, #228b22 100%);
+        color: white;
+        padding: 24px;
+        text-align: center;
+      }
+
+      .results-content {
+        padding: 32px;
+      }
+
+      .cycle-result {
+        background: linear-gradient(135deg, #e8f5e8, #d4edda);
+        border: 1px solid #4caf50;
+        border-radius: 12px;
+        padding: 24px;
+        margin-bottom: 32px;
+        text-align: center;
+      }
+
+      .cycle-title {
+        font-size: 1.3em;
+        color: #2e7d32;
+        margin-bottom: 20px;
+        font-weight: 600;
+      }
+
+      .cycle-steps {
+        display: grid;
+        gap: 16px;
+        margin: 20px 0;
+      }
+
+      .cycle-step {
+        background: white;
+        border: 1px solid #4caf50;
+        border-radius: 8px;
+        padding: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      .cycle-step.free-choice {
+        border-color: #17a2b8;
+        background: #f0f9ff;
+      }
+
+      .step-number {
+        background: #4caf50;
+        color: white;
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 600;
+      }
+
+      .step-number.free {
+        background: #17a2b8;
+      }
+
+      .step-technique {
+        font-size: 1.1em;
+        font-weight: 600;
+        color: #2e7d32;
+      }
+
+      .step-technique.free {
+        color: #17a2b8;
+      }
+
+      .step-description {
+        font-size: 0.9em;
+        color: #6c757d;
+        text-align: right;
+      }
+
+      .cycle-info {
+        background: rgba(255, 255, 255, 0.7);
+        padding: 16px;
+        border-radius: 8px;
+        margin-top: 20px;
+      }
+
+      .stats-footer {
+        background: #e8f5e8;
+        padding: 20px;
+        text-align: center;
+        font-size: 0.9em;
+        color: #2e7d32;
+      }
+
+      .partner-only {
+        background: linear-gradient(135deg, #ffd700, #ffed4e);
+        color: #333;
+        padding: 4px 8px;
+        border-radius: 12px;
+        font-size: 0.7em;
+        font-weight: 600;
+        margin-top: 8px;
+        display: inline-block;
+      }
+
+      .free-only {
+        background: linear-gradient(135deg, #17a2b8, #20c997);
+        color: white;
+        padding: 4px 8px;
+        border-radius: 12px;
+        font-size: 0.7em;
+        font-weight: 600;
+        margin-top: 8px;
+        display: inline-block;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <div class="mode-toggle">
+          <button class="mode-btn active" data-mode="basic">Alap Mód</button>
+          <button class="mode-btn" data-mode="partner">💎 Partner Mód</button>
+          <button class="mode-btn" data-mode="free">🎲 Szabad Játék</button>
+        </div>
+        <h1>🏌️‍♂️⚽ GānFootgolf</h1>
+        <p id="subtitle">
+          Ciklus Footgolf Generátor - Alap Mód (9,330 kombináció)
+        </p>
+
+        <div style="margin-top: 20px">
+          <button class="back-btn" onclick="window.location.href='index.html'">
+            ← Vissza a Hubra
+          </button>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="section">
+          <div class="section-title">🔁 Ciklus Hossza</div>
+          <div class="cycle-length-selector">
+            <div class="cycle-btn" data-length="1">1 Rúgás</div>
+            <div class="cycle-btn active" data-length="2">2 Rúgás</div>
+            <div class="cycle-btn" data-length="3">3 Rúgás</div>
+            <div class="cycle-btn" data-length="4">4 Rúgás</div>
+            <div class="cycle-btn" data-length="5">5 Rúgás</div>
+            <div class="cycle-btn partner-length" data-length="variable">
+              <div>🎲 Változó Hossz</div>
+              <div class="partner-only">💎 Partner funkció</div>
+            </div>
+            <div class="cycle-btn free-mode" data-length="free">
+              <div>🎲 Teljes Szabadság</div>
+              <div class="free-only">🎲 Szabad Játék</div>
+            </div>
+          </div>
+
+          <div class="partner-config" id="partner-config">
+            <div class="section-title">💎 Partner Mód Konfigurációk</div>
+            <div id="position-configs"></div>
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="section-title">🦶 Domináns Oldal Mód</div>
+          <div class="cultures-grid">
+            <div class="culture-card" data-culture="dominantFoot">
+              <div class="checkbox"></div>
+              <div class="culture-title">🦶 Domináns Oldal Mód</div>
+              <div class="culture-desc">
+                Jobb/Bal helyett Domináns/Gyengébb oldal
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="generate-section">
+          <button class="generate-btn" onclick="generate()">
+            🏌️ Ciklus Generálása
+          </button>
+        </div>
+
+        <div class="results" id="results">
+          <div class="results-header">
+            <h2>⚡ Generált Footgolf Ciklus</h2>
+          </div>
+          <div class="results-content" id="results-content"></div>
+          <div class="stats-footer" id="stats"></div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // === KONFIGURÁCIÓ ===
+      let config = {
+        mode: "basic",
+        cycleLength: 2,
+        isVariableLength: false,
+        isFreePlay: false,
+        dominantMode: false,
+        partnerPositions: {}, // Pozíciónként: 'generated' vagy 'free'
+      };
+
+      // === FOOTGOLF TECHNIKÁK (6 db CSAK) ===
+      const FOOTGOLF_TECHNIQUES = {
+        standard: [
+          {
+            name: "Jobb + Belső",
+            type: "precision",
+            description: "Precíz irányítás, rövid puttek",
+          },
+          {
+            name: "Jobb + Rüszt",
+            type: "balanced",
+            description: "Közepes erő + pontosság",
+          },
+          {
+            name: "Jobb + Külső",
+            type: "power",
+            description: "Nagy erő, hosszú drive",
+          },
+          {
+            name: "Bal + Belső",
+            type: "precision",
+            description: "Precíz irányítás, rövid puttek",
+          },
+          {
+            name: "Bal + Rüszt",
+            type: "balanced",
+            description: "Közepes erő + pontosság",
+          },
+          {
+            name: "Bal + Külső",
+            type: "power",
+            description: "Nagy erő, hosszú drive",
+          },
+        ],
+        dominant: [
+          {
+            name: "Domináns + Belső",
+            type: "precision",
+            description: "Precíz irányítás, rövid puttek",
+          },
+          {
+            name: "Domináns + Rüszt",
+            type: "balanced",
+            description: "Közepes erő + pontosság",
+          },
+          {
+            name: "Domináns + Külső",
+            type: "power",
+            description: "Nagy erő, hosszú drive",
+          },
+          {
+            name: "Gyengébb + Belső",
+            type: "precision",
+            description: "Precíz irányítás, rövid puttek",
+          },
+          {
+            name: "Gyengébb + Rüszt",
+            type: "balanced",
+            description: "Közepes erő + pontosság",
+          },
+          {
+            name: "Gyengébb + Külső",
+            type: "power",
+            description: "Nagy erő, hosszú drive",
+          },
+        ],
+      };
+
+      const TYPE_LABELS = {
+        precision: "🎯 Pontosság",
+        balanced: "⚖️ Kiegyensúlyozott",
+        power: "💪 Erő",
+      };
+
+      // === INICIALIZÁLÁS ===
+      document.addEventListener("DOMContentLoaded", function () {
+        initEventListeners();
+        updateUIForMode();
+        updateSessionCount();
+      });
+
+      function initEventListeners() {
+        // Mode váltás
+        document.querySelectorAll(".mode-btn").forEach((btn) => {
+          btn.addEventListener("click", function () {
+            document
+              .querySelectorAll(".mode-btn")
+              .forEach((b) => b.classList.remove("active"));
+            this.classList.add("active");
+            config.mode = this.dataset.mode;
+            updateUIForMode();
+          });
+        });
+
+        // Ciklus hossz
+        document.querySelectorAll(".cycle-btn").forEach((btn) => {
+          btn.addEventListener("click", function () {
+            const length = this.dataset.length;
+
+            // Ellenőrizzük a hozzáférhetőséget
+            if (length === "variable" && config.mode !== "partner") return;
+            if (length === "free" && config.mode !== "free") return;
+
+            document
+              .querySelectorAll(".cycle-btn")
+              .forEach((b) => b.classList.remove("active"));
+            this.classList.add("active");
+
+            config.isVariableLength = length === "variable";
+            config.isFreePlay = length === "free";
+
+            if (config.isFreePlay) {
+              config.cycleLength = 0;
+            } else if (config.isVariableLength) {
+              config.cycleLength = 0; // Partner módban változó
+            } else {
+              config.cycleLength = parseInt(length);
+            }
+
+            updatePartnerConfig();
+          });
+        });
+
+        // Domináns mód
+        document
+          .querySelector('[data-culture="dominantFoot"]')
+          .addEventListener("click", function () {
+            this.classList.toggle("active");
+            config.dominantMode = this.classList.contains("active");
+          });
+      }
+
+      function updateUIForMode() {
+        const mode = config.mode;
+        const variableLengthBtn = document.querySelector(
+          '[data-length="variable"]'
+        );
+        const freePlayBtn = document.querySelector('[data-length="free"]');
+        const subtitle = document.getElementById("subtitle");
+
+        // Reset active states
+        document
+          .querySelectorAll(".cycle-btn")
+          .forEach((b) => b.classList.remove("active"));
+
+        if (mode === "basic") {
+          if (subtitle)
+            subtitle.textContent =
+              "Ciklus Footgolf Generátor - Alap Mód (9,330 kombináció)";
+
+          // Disable partner and free functions
+          if (variableLengthBtn) {
+            variableLengthBtn.style.opacity = "0.5";
+            variableLengthBtn.style.pointerEvents = "none";
+          }
+          if (freePlayBtn) {
+            freePlayBtn.style.opacity = "0.5";
+            freePlayBtn.style.pointerEvents = "none";
+          }
+
+          // Reset to default
+          config.cycleLength = 2;
+          config.isVariableLength = false;
+          config.isFreePlay = false;
+          document.querySelector('[data-length="2"]').classList.add("active");
+        } else if (mode === "partner") {
+          if (subtitle)
+            subtitle.textContent =
+              "Ciklus Footgolf Generátor - 💎 Partner Mód (25,000+ kombináció)";
+
+          // Enable partner functions, disable free
+          if (variableLengthBtn) {
+            variableLengthBtn.style.opacity = "1";
+            variableLengthBtn.style.pointerEvents = "auto";
+          }
+          if (freePlayBtn) {
+            freePlayBtn.style.opacity = "0.5";
+            freePlayBtn.style.pointerEvents = "none";
+          }
+
+          // Reset to default
+          config.cycleLength = 2;
+          config.isVariableLength = false;
+          config.isFreePlay = false;
+          document.querySelector('[data-length="2"]').classList.add("active");
+        } else if (mode === "free") {
+          if (subtitle)
+            subtitle.textContent =
+              "Szabad Footgolf - 🎲 Nincs Ciklus (∞ szabadság)";
+
+          // Disable partner functions, enable free
+          if (variableLengthBtn) {
+            variableLengthBtn.style.opacity = "0.5";
+            variableLengthBtn.style.pointerEvents = "none";
+          }
+          if (freePlayBtn) {
+            freePlayBtn.style.opacity = "1";
+            freePlayBtn.style.pointerEvents = "auto";
+            freePlayBtn.classList.add("active");
+          }
+
+          config.isFreePlay = true;
+          config.cycleLength = 0;
+        }
+
+        updatePartnerConfig();
+      }
+
+      function updatePartnerConfig() {
+        const partnerConfig = document.getElementById("partner-config");
+        const positionConfigs = document.getElementById("position-configs");
+
+        if (
+          config.mode === "partner" &&
+          !config.isFreePlay &&
+          config.cycleLength > 0
+        ) {
+          partnerConfig.classList.add("show");
+
+          // Generate position configs
+          let html = "";
+          for (let i = 1; i <= config.cycleLength; i++) {
+            const currentSetting = config.partnerPositions[i] || "generated";
+            html += `
+                        <div class="position-config">
+                            <div class="position-label">${i}. Rúgás</div>
+                            <div class="config-toggle">
+                                <div class="config-btn ${
+                                  currentSetting === "generated" ? "active" : ""
+                                }" 
+                                     data-position="${i}" data-mode="generated">Generált</div>
+                                <div class="config-btn free ${
+                                  currentSetting === "free" ? "active" : ""
+                                }" 
+                                     data-position="${i}" data-mode="free">Szabad</div>
+                            </div>
+                        </div>
+                    `;
+          }
+          positionConfigs.innerHTML = html;
+
+          // Add event listeners for position configs
+          document.querySelectorAll(".config-btn").forEach((btn) => {
+            btn.addEventListener("click", function () {
+              const position = this.dataset.position;
+              const mode = this.dataset.mode;
+
+              // Update active state
+              document
+                .querySelectorAll(`[data-position="${position}"]`)
+                .forEach((b) => {
+                  b.classList.remove("active");
+                });
+              this.classList.add("active");
+
+              // Save configuration
+              config.partnerPositions[position] = mode;
+            });
+          });
+        } else {
+          partnerConfig.classList.remove("show");
+        }
+      }
+
+      function updateSessionCount() {
+        // Update session count for GānFootgolf
+        let sessionCount = parseInt(
+          localStorage.getItem("ganball-total-sessions") || "0"
+        );
+        let gameStats = JSON.parse(
+          localStorage.getItem("ganball-game-stats") || "{}"
+        );
+
+        if (!gameStats["ganfootgolf"]) {
+          gameStats["ganfootgolf"] = { sessions: 0, lastPlayed: null };
+        }
+
+        gameStats["ganfootgolf"].sessions++;
+        gameStats["ganfootgolf"].lastPlayed = new Date().toISOString();
+        sessionCount++;
+
+        localStorage.setItem("ganball-total-sessions", sessionCount.toString());
+        localStorage.setItem("ganball-game-stats", JSON.stringify(gameStats));
+      }
+
+      // === GENERÁLÁS ===
+      function generate() {
+        if (config.isFreePlay) {
+          displayFreePlayResult();
+          return;
+        }
+
+        let cycleLength;
+
+        if (config.isVariableLength) {
+          cycleLength = Math.floor(Math.random() * 5) + 1; // 1-5 random Partner módban
+        } else {
+          cycleLength = config.cycleLength;
+        }
+
+        const techniques = config.dominantMode
+          ? FOOTGOLF_TECHNIQUES.dominant
+          : FOOTGOLF_TECHNIQUES.standard;
+
+        const cycle = [];
+        for (let i = 0; i < cycleLength; i++) {
+          const stepNumber = i + 1;
+          const positionMode =
+            config.partnerPositions[stepNumber] || "generated";
+
+          if (positionMode === "free") {
+            cycle.push({
+              step: stepNumber,
+              name: "Játékos Dönt",
+              type: "free",
+              description: "Szabad technika választás",
+              isFree: true,
+            });
+          } else {
+            const randomTechnique =
+              techniques[Math.floor(Math.random() * techniques.length)];
+            cycle.push({
+              step: stepNumber,
+              ...randomTechnique,
+              isFree: false,
+            });
+          }
+        }
+
+        displayResults(cycle);
+      }
+
+      function displayFreePlayResult() {
+        let html = `
+                <div class="cycle-result">
+                    <div class="cycle-title">🎲 Szabad Footgolf</div>
+                    <div style="text-align: center; padding: 40px;">
+                        <div style="font-size: 2em; margin-bottom: 20px;">🏌️‍♂️ TELJES FOOTGOLF SZABADSÁG ⚽</div>
+                        <div style="font-size: 1.2em; color: #6c757d; margin-bottom: 30px;">
+                            Nincs előre meghatározott ciklus vagy technika.<br>
+                            A játékos minden rúgásnál szabadon dönthet.
+                        </div>
+                        <div style="background: rgba(46, 139, 87, 0.1); padding: 20px; border-radius: 8px;">
+                            <strong>🏌️‍♂️ Footgolf Szabadság:</strong><br>
+                            • Minden rúgásnál válassz technikát a helyzethez<br>
+                            • Nincs megkötés vagy ciklus<br>
+                            • Taktikai gondolkodás szükséges<br>
+                            • Alkalmazkodj a pálya adottságaihoz
+                        </div>
+                    </div>
+                </div>
+            `;
+
+        document.getElementById("results-content").innerHTML = html;
+
+        document.getElementById("stats").innerHTML = `
+                🎲 Mód: SZABAD FOOTGOLF | Nincs ciklus | 🏌️‍♂️ GānFootgolf Generátor
+            `;
+
+        const results = document.getElementById("results");
+        results.style.display = "block";
+        results.scrollIntoView({ behavior: "smooth" });
+      }
+
+      function displayResults(cycle) {
+        let html = `
+                <div class="cycle-result">
+                    <div class="cycle-title">🏌️‍♂️ ${cycle.length} Rúgásos Footgolf Ciklus</div>
+                    <div class="cycle-steps">
+            `;
+
+        cycle.forEach((step) => {
+          if (step.isFree) {
+            html += `
+                        <div class="cycle-step free-choice">
+                            <div class="step-number free">${step.step}</div>
+                            <div class="step-technique free">${step.name}</div>
+                            <div class="step-description">
+                                🎯 Szabad Választás<br>
+                                <small>${step.description}</small>
+                            </div>
+                        </div>
+                    `;
+          } else {
+            html += `
+                        <div class="cycle-step">
+                            <div class="step-number">${step.step}</div>
+                            <div class="step-technique">${step.name}</div>
+                            <div class="step-description">
+                                ${TYPE_LABELS[step.type]}<br>
+                                <small>${step.description}</small>
+                            </div>
+                        </div>
+                    `;
+          }
+        });
+
+        const hasFreePositions = cycle.some((step) => step.isFree);
+
+        html += `
+                    </div>
+                    <div class="cycle-info">
+                        <strong>🔄 Használat:</strong> A ciklus végén újraindul az 1. lépéstől<br>
+                        <strong>🎯 Cél:</strong> Minden rúgást a megadott technikával kell végrehajtani
+                        ${
+                          hasFreePositions
+                            ? "<br><strong>🎲 Szabad pozíciók:</strong> A játékos dönt a technikáról"
+                            : ""
+                        }
+                    </div>
+                </div>
+            `;
+
+        document.getElementById("results-content").innerHTML = html;
+
+        const mode = config.isVariableLength
+          ? "VÁLTOZÓ HOSSZ"
+          : config.isFreePlay
+          ? "SZABAD JÁTÉK"
+          : `${config.cycleLength} RÚGÁS`;
+        const modeText =
+          config.mode === "partner"
+            ? "💎 Partner Mód"
+            : config.mode === "free"
+            ? "🎲 Szabad Játék"
+            : "Alap Mód";
+        const dominantText = config.dominantMode ? " | 🦶 Domináns Mód" : "";
+
+        document.getElementById("stats").innerHTML = `
+                🏌️ Ciklus: ${mode} | ${modeText}${dominantText} | ⚽ GānFootgolf Generátor
+            `;
+
+        const results = document.getElementById("results");
+        results.style.display = "block";
+        results.scrollIntoView({ behavior: "smooth" });
+      }
+    </script>
+  </body>
+</html>

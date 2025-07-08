@@ -17,25 +17,25 @@ const GAMES_CONFIG = {
     status: "available",
     url: "ganfoottennis.html",
   },
-  ganfootgolf: {
-    id: "ganfootgolf",
-    name: "GānFootgolf",
-    icon: "⛳",
-    description: "Precíziós láb golf kihívások és pálya generátor",
-    features: ["partner_mode", "leaderboard"],
-    combinationCount: 85000,
-    status: "coming_soon",
-    url: "#",
-  },
   ganfootvolley: {
     id: "ganfootvolley",
     name: "GānFootvolley",
     icon: "🏐",
-    description: "1v1 láb volleyball eszköz felett játékkal",
+    description: "1v1 láb volleyball hálón át 269,002 kombinációval",
     features: ["partner_mode", "leaderboard"],
-    combinationCount: 120000,
-    status: "coming_soon",
-    url: "#",
+    combinationCount: 269002,
+    status: "available",
+    url: "ganfootvolley.html",
+  },
+  ganfootgolf: {
+    id: "ganfootgolf",
+    name: "GānFootgolf",
+    icon: "⛳",
+    description: "Ciklus footgolf generátor 9,330 kombinációval",
+    features: ["partner_mode", "leaderboard"],
+    combinationCount: 9330,
+    status: "available", // ← AKTIVÁLVA!
+    url: "ganfootgolf.html", // ← MŰKÖDŐ URL!
   },
   gancuju: {
     id: "gancuju",
@@ -43,9 +43,9 @@ const GAMES_CONFIG = {
     icon: "🏺",
     description: "4000 éves ősi kínai labdarúgó technikák",
     features: ["partner_mode", "leaderboard"],
-    combinationCount: 95000,
-    status: "coming_soon",
-    url: "#",
+    combinationCount: 1000000,
+    status: "available",
+    url: "gancuju.html",
   },
 };
 
